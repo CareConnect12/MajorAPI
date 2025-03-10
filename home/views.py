@@ -376,9 +376,17 @@ class requestforappointment(APIView):
                user_name=request.session['username']
                user_id=request.session['user_id']
                data = request.data.copy()
-               data['user_name'] = user_name
-               data['user_id'] = user_id
+               data['username'] = user_name
+               data['userId'] = user_id
                serializer=Bookedserializer(data=data)
+               if not serializer.is_valid():
+                    return Response({'status':status.HTTP_400_BAD_REQUEST,'error':serializer.errors})
+               serializer.save()
+               return Response({'status':status.HTTP_200_OK,'message':'success'})
+            
+class requestforappointmentMobile(APIView):
+     def post(self,request):
+               serializer=Bookedserializer(data=request.data)
                if not serializer.is_valid():
                     return Response({'status':status.HTTP_400_BAD_REQUEST,'error':serializer.errors})
                serializer.save()

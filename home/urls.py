@@ -39,5 +39,6 @@ urlpatterns = [
     path('verify_token_Mobile/',verify_token_Mobile),
     path('GeneratenewOtpMobile/',GeneratenewOtpMobile.as_view()),
     path('Rejectappointment/',Rejectappointment.as_view()),
-    path('GetDoctor/',GetDoctor)
+    path('GetDoctor/',GetDoctor),
+    path('requestforappointmentMobile/',requestforappointmentMobile.as_view())
 ]

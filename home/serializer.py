@@ -154,8 +154,8 @@ class Bookedserializer(serializers.ModelSerializer):
         fields="__all__"
     
     def create(self,validated_data):
-        user_name = validated_data['user_name']
-        user_id = validated_data['user_id']
+        user_name = validated_data['username']
+        user_id = validated_data['userId']
         doctor_id = validated_data['Doctor_id']
         doctor_name = validated_data['doctor_name']
         booked_slot = validated_data['booked_slot']
