@@ -1,0 +1,225 @@
+from home.models import *
+from rest_framework import serializers
+import secrets
+
+
+class registerserializer(serializers.ModelSerializer):
+    class Meta:
+        model=registration
+        fields="__all__"
+    def create(self, validated_data):
+        username=validated_data['email']
+        user=User.objects.filter(username=username)
+        if user.exists():
+            raise serializers.ValidationError({'error':'username is already taken'})
+        user_token=secrets.token_hex(16)
+        obj1=registration.objects.create(
+            full_name=validated_data['full_name'],
+            fathers_name=validated_data['fathers_name'],
+            gender=validated_data['gender'],
+            email=validated_data['email'],
+            code=validated_data['code'],
+            address1=validated_data['address1'],
+            address2=validated_data['address2'],
+            city=validated_data['city'],
+            state=validated_data['state'],
+            zip=validated_data['zip'],
+            token=user_token
+        )
+        obj1.save()
+        obj2=User.objects.create(
+            username=validated_data['email'],
+            first_name="User"
+        )
+        obj2.set_password(validated_data['code'])
+        obj2.save()
+        return user_token
+
+class loginserializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=['username','password']
+    
+class profileserializer(serializers.ModelSerializer):
+    class Meta:
+        model=registration
+        fields="__all__"
+        
+class feedbackserializer(serializers.ModelSerializer):
+    class Meta:
+        model=feed
+        fields="__all__"
+
+class bedsserializer(serializers.ModelSerializer):
+    class Meta:
+        model=beds
+        fields="__all__"
+        
+class hospitalinfoserializer(serializers.ModelSerializer):
+    class Meta:
+        model=hospitalinfo
+        fields="__all__"
+        def get_photo_url(self,obj):
+            request=self.context.get('request')
+            photo_url=obj.fingerprint.url
+            return request.build_absolute_uri(photo_url)
+class patientrequestserializer(serializers.ModelSerializer):
+    class Meta:
+        model=patient_info
+        fields="__all__"
+class hospital(serializers.ModelSerializer):
+    class Meta:
+        model=hospitalinfo
+        fields="__all__"
+
+class copyserializer(serializers.ModelSerializer):
+    class Meta:
+        model=beds
+        fields="__all__"
+class finalinfoserializer(serializers.ModelSerializer):
+    class Meta:
+        model=finalinformation
+        fields="__all__"
+    
+class Doctorserializer(serializers.ModelSerializer):
+    class Meta:
+        model=DoctorRegistration
+        fields="__all__"
+    def create(self, validated_data):
+        username=validated_data['email']
+        status_obj=User.objects.filter(username=username)
+        user_token=secrets.token_hex(16)
+        if status_obj.exists():
+            raise serializers.ValidationError({'error':'user with this username is already exists'})
+        obj1=User.objects.create(
+            username=username,
+            first_name="Doctor"
+        )
+        obj1.set_password(validated_data['passcode'])
+        obj1.save()
+        obj=DoctorRegistration.objects.create(
+            full_name=validated_data['full_name'],
+            fathers_name=validated_data['fathers_name'],
+            gender=validated_data['gender'],
+            email=username,
+            passcode=validated_data['passcode'],
+            address1=validated_data['address1'],
+            address2=validated_data['address2'],
+            city=validated_data['city'],
+            state=validated_data['state'],
+            Morning_slot=validated_data['Morning_slot'],
+            Evening_slot=validated_data['Evening_slot'],
+            Night_slot=validated_data['Night_slot'],
+            Afternoon_slot=validated_data['Afternoon_slot'],
+            zip=validated_data['zip'],
+            token=user_token
+            # license=validated_data['license']
+        )
+        obj.save()
+        return user_token
+
+
+#  serializer for the Doctor's slot]
+class Doctor_slot_serializer(serializers.ModelSerializer):
+    class Meta:
+        model=Doctor_slot
+        fields="__all__"
+    
+
+# Serializer for booked appointment
+# class Bookedserializer(serializers.ModelSerializer):
+#     class Meta:
+#         model=Appointment
+#         fields="__all__"
+#     def __init__(self, *args, **kwargs):
+#         fields = kwargs.pop('fields', None)
+#         super(Bookedserializer, self).__init__(*args, **kwargs)
+#         if fields is not None:
+#             allowed = set(fields)
+#             existing = set(self.fields.keys())
+#             for field_name in existing - allowed:
+#                 self.fields.pop(field_name)
+
+class Bookedserializer(serializers.ModelSerializer):
+    class Meta:
+        model=Appointment
+        fields="__all__"
+    
+    def create(self,validated_data):
+        user_name = validated_data['user_name']
+        user_id = validated_data['user_id']
+        doctor_id = validated_data['Doctor_id']
+        doctor_name = validated_data['doctor_name']
+        booked_slot = validated_data['booked_slot']
+        appointment_date = validated_data['appointment_date']
+        purpose = validated_data['purpose']
+        notes=validated_data['notes']
+        obj=Appointment.objects.create(
+            user_name=user_name,
+            user_id=user_id,
+            doctor_id=doctor_id,
+            doctor_name=doctor_name,
+            booked_slot=booked_slot,
+            appointment_date=appointment_date,
+            purpose=purpose,
+            notes=notes
+        )
+        obj.save()
+        return validated_data
+
+
+
+# Get Doctor's Serializer
+class GetDoctorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DoctorRegistration
+        fields="__all__"
+
+
+# Serilizer to insert the Beds data
+class Insertbedsserializer(serializers.ModelSerializer):
+    class Meta:
+        model=beds
+        fields="__all__"
+
+    def create(self,validated_data):
+        Bed_id=validated_data['Bed_id']
+        Ward_number=validated_data['ward_number']
+        Room_number=validated_data['Room_number']
+        Bed_type=validated_data['Bed_type']
+        obj=beds.objects.create(
+            Hospital_name=Hospital,
+            Hospital_id=Hospital_id,
+            Bed_id=Bed_id,
+            Ward_number=Ward_number,
+            Room_number=Room_number,
+            Bed_type=Bed_type
+        )
+        obj.save()
+        return validated_data
+    
+class Userserilaizer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields="__all__"
+    
+class DoctorProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=DoctorRegistration
+        fields="__all__"
+
+
+
+
+
+        
+    
+
+        
+
+
+        
+
+        
+        
+            
