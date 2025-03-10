@@ -180,7 +180,6 @@ class Appointment(models.Model):
     doctor_name= models.CharField(max_length=200)
     booked_slot = models.CharField(max_length=50)
     appointment_date = models.DateField()
-    status = models.CharField(max_length=20, default='Pending')
     purpose = models.TextField()
     notes = models.TextField(blank=True, null=True)
     payment_status = models.CharField(max_length=20, default='Pending')

@@ -23,7 +23,7 @@ urlpatterns = [
     path('Doctor_login/',Doctor_login.as_view()),
     path('Doctorlist/',GetAllDoctor),
     path('Doctor_slot/',Doctor_slot_list_by_type.as_view()),
-    path('booked_slot/',Booked_slot.as_view()),
+    path('booked_slot/',Bookedslot.as_view()),
     # path('Available_slot/',Available_slot.as_view()),
     path('Available_slot_For_Doctor/',Available_slot_For_Doctor.as_view()),
     path('requestforappointment/',requestforappointment.as_view()),

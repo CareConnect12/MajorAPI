@@ -320,7 +320,7 @@ class Doctor_slot_find(APIView):
         
 
 # For dispaly the Booked slot's
-class Booked_slot(APIView):
+class Bookedslot(APIView):
      def post(self,request):
             obj=Appointment.objects.all()
             serializer=Bookedserializer(obj,many=True)

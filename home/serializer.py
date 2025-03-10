@@ -68,7 +68,7 @@ class patientrequestserializer(serializers.ModelSerializer):
     class Meta:
         model=patient_info
         fields="__all__"
-        
+
 class hospital(serializers.ModelSerializer):
     class Meta:
         model=hospitalinfo
@@ -99,24 +99,31 @@ class Doctorserializer(serializers.ModelSerializer):
         )
         obj1.set_password(validated_data['passcode'])
         obj1.save()
-        obj=DoctorRegistration.objects.create(
-            full_name=validated_data['full_name'],
-            fathers_name=validated_data['fathers_name'],
-            gender=validated_data['gender'],
-            email=username,
-            passcode=validated_data['passcode'],
-            address1=validated_data['address1'],
-            address2=validated_data['address2'],
-            city=validated_data['city'],
-            state=validated_data['state'],
-            Morning_slot=validated_data['Morning_slot'],
-            Evening_slot=validated_data['Evening_slot'],
-            Night_slot=validated_data['Night_slot'],
-            Afternoon_slot=validated_data['Afternoon_slot'],
-            zip=validated_data['zip'],
-            token=user_token
-            # license=validated_data['license']
+
+        obj = DoctorRegistration.objects.create(
+        full_name=validated_data['full_name'],
+        fathers_name=validated_data['fathers_name'],
+        gender=validated_data['gender'],
+        email=username, 
+        passcode=validated_data['passcode'],
+        address1=validated_data['address1'],
+        address2=validated_data.get('address2', ''), 
+        city=validated_data['city'],
+        state=validated_data['state'],
+        zip=validated_data['zip'],
+        Morning_slot=validated_data.get('Morning_slot', False),
+        Evening_slot=validated_data.get('Evening_slot', False),
+        Night_slot=validated_data.get('Night_slot', False),
+        Afternoon_slot=validated_data.get('Afternoon_slot', False),
+        token=user_token, 
+        contact_number=validated_data.get('contact_number', ''), 
+        Medical_license_number=validated_data.get('Medical_license_number', ''),
+        Licence_issuing_authority=validated_data.get('Licence_issuing_authority', ''),
+        Specialization=validated_data.get('Specialization', ''),
+        Year_of_experience=validated_data.get('Year_of_experience', 0),
+        Qualification=validated_data.get('Qualification', ''),
         )
+        
         obj.save()
         return user_token
 
