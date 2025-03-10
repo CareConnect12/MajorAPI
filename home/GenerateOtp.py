@@ -70,7 +70,7 @@ def MeetingLinkMail(meeting_link,user):
         recipient_list=[user]
         send_mail(subject,message,from_email,recipient_list)
 
-def MailTODoctor():
+def MailTODoctor(user_token,user):
         subject="Account Verification for CareConnect"
         message = (
         f"Dear User,\n\n"
