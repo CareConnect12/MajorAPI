@@ -1,6 +1,4 @@
 from django.shortcuts import render
-from django.db.models import
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import APIView
 from rest_framework.decorators import api_view
@@ -92,7 +90,7 @@ class userlogin(APIView):
             request.session['user_role']=obj_id.userRole
             # request.session.set_expiry(30)
             print(request.session['username'])
-            return Response({'status':status.HTTP_200_OK,'message':'success','Token':obj_id.token,'UserRole':obj_id.userRole})
+            return Response({'status':status.HTTP_200_OK,'message':'success','Token':obj_id.token,'UserRole':obj_id.userRole,'user_id':obj_id.id,'username':obj_id.email})
         else:
             return Response({'status':status.HTTP_401_UNAUTHORIZED,'message':" user is not verified"}) 
 
@@ -272,7 +270,7 @@ class Doctor_login(APIView):
                request.session['user_type']='Doctor'
                login_update_status=update_login(username,1)
                if (login_update_status=="successfull"): 
-                    return Response({'status':200,'message':'login','login_user':request.session['username'],'Token':obj.token,'userRole':obj.userRole})
+                    return Response({'status':200,'message':'login','login_user':request.session['username'],'Token':obj.token,'userRole':obj.userRole,'user_id':obj.id})
 
 
 
