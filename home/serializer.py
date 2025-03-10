@@ -123,7 +123,6 @@ class Doctorserializer(serializers.ModelSerializer):
         Year_of_experience=validated_data.get('Year_of_experience', 0),
         Qualification=validated_data.get('Qualification', ''),
         )
-        
         obj.save()
         return user_token
 

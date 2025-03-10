@@ -1,6 +1,5 @@
 from django.shortcuts import render
-
-# Create your views here.
+from django.db.models import
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import APIView
@@ -21,6 +20,7 @@ import hmac
 import time
 import base64
 import json
+
 
 
 # Create your views here
@@ -316,6 +316,9 @@ class Doctor_slot_find(APIView):
         if (Doctor_data.Night_slot==True):
             Night_slot=Doctor_slot.objects.filter(slot_type="Night")
             request_data["Night"]=Doctor_slot_serializer(Night_slot,many=True).data
+        if (Doctor_data.Afternoon_slot==True):
+            Afternoon_slot=Doctor_slot.objects.filter(slot_type="Afternoon")
+            request_data["Afternoon"]=Doctor_slot_serializer(Afternoon_slot,many=True).data
         return Response({'status':status.HTTP_200_OK,'MorningSlot':request_data})
         
 
@@ -344,22 +347,31 @@ class Bookedslot(APIView):
 #             return Response({'status':status.HTTP_200_OK,'message':serializer.data})
 
     
+
+    
 class Available_slot_For_Doctor(APIView):
     def post(self,request):
         slot_date=request.data['slot_date']
         Doctor_id=request.data['Doctor_id']
         try:
+            Doctor_data=DoctorRegistration.objects.get(id=Doctor_id)
             booked_slot=Booked_slot.objects.filter(appointment_date=slot_date,Doctor_id=Doctor_id)
             booked_slot_by_date=booked_slot.values_list('booked_slot',flat=True)
             Available_slot=Doctor_slot.objects.exclude(slot_duration__in=booked_slot_by_date)
+            if(Doctor_data.Morning_slot==True):
+                Available_slot=Available_slot.filter(slot_type="Morning")
+            if(Doctor_data.Night_slot==True):
+                Available_slot=Available_slot.filter(slot_type="Night")
+            if(Doctor_data.Afternoon_slot==True):
+                Available_slot=Available_slot.filter(slot_type="Afternoon")
+            if(Doctor_data.Evening_slot==True):
+                Available_slot=Available_slot.filter(slot_type="Evening")
             serializer=Doctor_slot_serializer(Available_slot,many=True)
             return Response({'status':status.HTTP_200_OK,'data':serializer.data})
-        except Appointment.DoesNotExist:
-            obj1=Doctor_slot.objects.all()
-            serializer=Doctor_slot_serializer(obj1,many=True)
-            return Response({'status':status.HTTP_200_OK,'message':serializer.data})
+        except DoctorRegistration.DoesNotExist:
+            return Response({'status':status.HTTP_400_BAD_REQUEST,'message':'Doctor not exist'})
         
-    
+
 class requestforappointment(APIView):
      def post(self,request):
           if request.session.has_key('username') and request.session.has_key('user_id'):
