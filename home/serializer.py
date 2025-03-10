@@ -116,12 +116,12 @@ class Doctorserializer(serializers.ModelSerializer):
         Night_slot=validated_data.get('Night_slot', False),
         Afternoon_slot=validated_data.get('Afternoon_slot', False),
         token=user_token, 
-        contact_number=validated_data.get('contact_number', ''), 
-        Medical_license_number=validated_data.get('Medical_license_number', ''),
-        Licence_issuing_authority=validated_data.get('Licence_issuing_authority', ''),
-        Specialization=validated_data.get('Specialization', ''),
-        Year_of_experience=validated_data.get('Year_of_experience', 0),
-        Qualification=validated_data.get('Qualification', ''),
+        contact_number=validated_data['contact_number'], 
+        Medical_license_number=validated_data['Medical_license_number'],
+        Licence_issuing_authority=validated_data['Licence_issuing_authority'],
+        Specialization=validated_data['Specialization'],
+        Year_of_experience=validated_data['Year_of_experience'],
+        Qualification=validated_data['Qualification'],
         )
         obj.save()
         return user_token
