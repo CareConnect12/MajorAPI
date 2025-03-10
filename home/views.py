@@ -424,11 +424,11 @@ class profile_data(APIView):
      def post(self,request):
           user_role=request.data['userRole']
           token=request.data['token']
-          if(user_role == "Doctor"):
-            obj=DoctorRegistration.objects.filter(token=token)
-            serializer=profileserializer(obj,many=True)
-          elif(user_role=="User"):
+          if(user_role == "User"):
             obj=registration.objects.filter(token=token)
+            serializer=profileserializer(obj,many=True)
+          if(user_role=="Doctor"):
+            obj=DoctorRegistration.objects.filter(token=token)
             serializer=DoctorProfileSerializer(obj,many=True) 
           else:
             return Response({'status':status.HTTP_400_BAD_REQUEST,'message':'please provide the User Role'})         
