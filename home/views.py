@@ -270,7 +270,7 @@ class Doctor_login(APIView):
                request.session['user_type']='Doctor'
                login_update_status=update_login(username,1)
                if (login_update_status=="successfull"): 
-                    return Response({'status':200,'message':'login','login_user':request.session['username'],'Token':obj.token,'userRole':obj.userRole,'user_id':obj.id})
+                    return Response({'status':200,'message':'login','username':request.session['username'],'Token':obj.token,'userRole':obj.userRole,'user_id':obj.id})
 
 
 
