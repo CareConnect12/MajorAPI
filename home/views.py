@@ -81,19 +81,21 @@ class userlogin(APIView):
         password=request.data['password']
         obj_id=registration.objects.get(email=username)
         user_role=obj_id.userRole
-        if obj_id.is_verified == True or obj_id.is_verified ==1:
-            user=authenticate(username=username,password=str(password))
-            if user is None:
-                return Response({'status':200,'message':'invlaid username and password'})
-            request.session['username']=request.data['username']
-            request.session['user_id']=obj_id.id
-            request.session['user_role']=obj_id.userRole
-            # request.session.set_expiry(30)
-            print(request.session['username'])
-            return Response({'status':status.HTTP_200_OK,'message':'success','Token':obj_id.token,'UserRole':obj_id.userRole,'user_id':obj_id.id,'username':obj_id.email})
+        if obj_id:
+            if obj_id.is_verified == True or obj_id.is_verified ==1:
+                user=authenticate(username=username,password=str(password))
+                if user is None:
+                    return Response({'status':200,'message':'invlaid username and password'})
+                request.session['username']=request.data['username']
+                request.session['user_id']=obj_id.id
+                request.session['user_role']=obj_id.userRole
+                # request.session.set_expiry(30)
+                print(request.session['username'])
+                return Response({'status':status.HTTP_200_OK,'message':'success','Token':obj_id.token,'UserRole':obj_id.userRole,'user_id':obj_id.id,'username':obj_id.email})
+            else:
+                return Response({'status':status.HTTP_401_UNAUTHORIZED,'message':" user is not verified"}) 
         else:
-            return Response({'status':status.HTTP_401_UNAUTHORIZED,'message':" user is not verified"}) 
-
+            return Response({'status':status.HTTP_400_BAD_REQUEST,'message':'user not exist'})
     
 # for profile
 class profile(APIView):
@@ -423,11 +425,11 @@ class logout_user(APIView):
 class profile_data(APIView):
      def post(self,request):
           user_role=request.data['userRole']
-          token=request.data['token']
-          if(user_role == "User"):
+          token=request.data['token']   
+          if(user_role=="User"):
             obj=registration.objects.filter(token=token)
             serializer=profileserializer(obj,many=True)
-          if(user_role=="Doctor"):
+          elif(user_role=="Doctor"):
             obj=DoctorRegistration.objects.filter(token=token)
             serializer=DoctorProfileSerializer(obj,many=True) 
           else:
