@@ -124,7 +124,6 @@ class feedback(APIView):
         return Response({'status':200,'message':serializer.data})
 
 
-    
 # For requesting the bed
 class requst_for_beds(APIView):
     def post(self,request):
@@ -132,7 +131,7 @@ class requst_for_beds(APIView):
         user=beds.objects.get(Bed_id=Bed_id)
         serializer=patientrequestserializer(data=request.data)
         if not serializer.is_valid():
-            return Response({'status':200,'message':serializer.errors})
+            return Response({'status':status.HTTP_400_BAD_REQUEST,'message':serializer.errors})
         serializer.save()
         user.delete()
         return Response({'status':200,'message':'your request is sended to the hospital'})

@@ -21,3 +21,4 @@ tzdata==2024.1
 urllib3==2.3.0
 whitenoise==6.8.2
 pillow
+psycopg

@@ -62,16 +62,16 @@ class registration(models.Model):
 class feed(models.Model):
     name=models.CharField(max_length=100)
     email=models.CharField(max_length=100)
-    message=models.CharField(max_length=2000)
+    message=models.TextField()
     def __str__(self):
         return self.name
 class beds(models.Model):
-    Hospital_name = models.CharField(max_length=300)
+    Hospital_name = models.TextField()
     Hospital_id=models.TextField()
-    Bed_id=models.CharField(max_length=300,unique=True)
-    Ward_number=models.CharField(max_length=100)
-    Room_number=models.CharField(max_length=100)
-    Bed_type=models.CharField(max_length=300)
+    Bed_id=models.TextField()
+    Ward_number=models.TextField()
+    Room_number=models.TextField()
+    Bed_type=models.TextField()
     def __str__(self):
         return self.Bed_id
 
@@ -89,10 +89,10 @@ ge=(('Male','Male'),
 class patient_info(models.Model):
     Hospital_name = models.CharField(max_length=300)
     Bed_id=models.CharField(max_length=300,unique=True)
-    Ward_number=models.IntegerField()
-    Room_number=models.IntegerField()
-    Disease=models.CharField(max_length=200)
-    Bed_type=models.CharField(max_length=300)
+    Ward_number=models.TextField()
+    Room_number=models.TextField()
+    Disease=models.TextField()
+    Bed_type=models.TextField()
     patient_name=models.CharField(max_length=200)
     patient_gender=models.CharField(choices=ge,max_length=300)
     patient_age=models.PositiveBigIntegerField()
@@ -149,6 +149,12 @@ class DoctorRegistration(models.Model):
     is_verified=models.BooleanField(default=False)
     # license=models.FileField(upload_to="Doctor_licence")
     userRole=models.TextField(default="Doctor")
+    contact_number=models.TextField(default='')
+    Medical_license_number=models.TextField(default='')
+    Licence_issuing_authority=models.TextField(default='')
+    Specialization=models.TextField(default='')
+    Year_of_experience=models.PositiveIntegerField(default=0)
+    Qualification=models.TextField(default='')
     def __str__(self):
         return self.full_name
     

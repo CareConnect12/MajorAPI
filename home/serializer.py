@@ -63,10 +63,12 @@ class hospitalinfoserializer(serializers.ModelSerializer):
             request=self.context.get('request')
             photo_url=obj.fingerprint.url
             return request.build_absolute_uri(photo_url)
+
 class patientrequestserializer(serializers.ModelSerializer):
     class Meta:
         model=patient_info
         fields="__all__"
+        
 class hospital(serializers.ModelSerializer):
     class Meta:
         model=hospitalinfo
