@@ -283,6 +283,14 @@ def GetAllDoctor(request):
     serializer=GetDoctorSerializer(DoctorObj,many=True)
     return Response({'status':status.HTTP_200_OK,'Data':serializer.data})
 
+# Data for the Doctor
+@api_view(['POST'])
+def GetDoctor(request):
+    doctor_id=request.data['DoctorId']
+    Doctorobj=DoctorRegistration.objects.filter(id=doctor_id)
+    serializer=GetDoctorSerializer(Doctorobj,many=True)
+    return Response({'status':status.HTTP_200_OK,'data':serializer.data})
+
 
 # for Doctor_slot based on the Slot_type(morning , night.....)
 class Doctor_slot_list_by_type(APIView):
