@@ -416,8 +416,8 @@ class appointment_status(APIView):
 
 class appointment_status_mobile(APIView):
      def post(self,request): 
-                user_type=request.session['userRole']  
-                user_id=request.session['userId']
+                user_type=request.data['userRole']  
+                user_id=request.data['userId']
                 if user_type=='User':
                     obj_user=Appointment.objects.filter(user_id=user_id)
                     serializer_user=Bookedserializer(obj_user,many=True,fields=['user_name','doctor_name','booked_slot','appointment_date','status','payment_status'])
@@ -464,11 +464,17 @@ class ViewAllBedInHospital(APIView):
 # Service For Insert the Bed's Data 
 class BedsService(APIView):
     def post(self,request):
-        serilaizer=Insertbedsserializer(data=request.data)
-        if not serilaizer.is_valid():
-            return Response({'status':HTTP_400_BAD_REQUEST,'error':serilaizer.errors})
-        serilaizer.save()
-        return Response({'status':status.HTTP_200_OK,'message':'success'})
+        if request.session.has_key("username"):
+            data=request.data.copy()
+            data['username']=request.session['username']
+            data['userId']=request.session['userId']
+            serilaizer=Insertbedsserializer(data=data)
+            if not serilaizer.is_valid():
+                return Response({'status':HTTP_400_BAD_REQUEST,'error':serilaizer.errors})
+            serilaizer.save()
+            return Response({'status':status.HTTP_200_OK,'message':'success'})
+        else:
+            return Response({'status':status.HTTP_200_OK,'message':'Hospital is not logged in'})
 
 
 class GenerateMeetingLink(APIView):
