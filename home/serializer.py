@@ -191,13 +191,15 @@ class Insertbedsserializer(serializers.ModelSerializer):
         fields="__all__"
 
     def create(self,validated_data):
+        username = self.context.get('username')  # Get username
+        userId = self.context.get('userId')
         Bed_id=validated_data['Bed_id']
-        Ward_number=validated_data['ward_number']
+        Ward_number=validated_data['Ward_number']
         Room_number=validated_data['Room_number']
         Bed_type=validated_data['Bed_type']
         obj=beds.objects.create(
-            Hospital_name=Hospital,
-            Hospital_id=Hospital_id,
+            Hospital_name=username,
+            Hospital_id=userId,
             Bed_id=Bed_id,
             Ward_number=Ward_number,
             Room_number=Room_number,

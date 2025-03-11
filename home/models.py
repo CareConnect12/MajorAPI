@@ -73,9 +73,11 @@ class feed(models.Model):
     message=models.TextField()
     def __str__(self):
         return self.name
+
+
 class beds(models.Model):
-    Hospital_name = models.TextField()
-    Hospital_id=models.TextField()
+    Hospital_name = models.TextField(default='')
+    Hospital_id=models.TextField(default='')
     Bed_id=models.TextField()
     Ward_number=models.TextField()
     Room_number=models.TextField()

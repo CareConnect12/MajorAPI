@@ -465,16 +465,16 @@ class ViewAllBedInHospital(APIView):
 class BedsService(APIView):
     def post(self,request):
         if request.session.has_key("username"):
-            data=request.data.copy()
-            data['username']=request.session['username']
-            data['userId']=request.session['userId']
-            serilaizer=Insertbedsserializer(data=data)
-            if not serilaizer.is_valid():
-                return Response({'status':HTTP_400_BAD_REQUEST,'error':serilaizer.errors})
-            serilaizer.save()
+            serializer = Insertbedsserializer(data=request.data, context={
+            'username': request.session['username'],
+            'userId': request.session['userId']
+             })
+            if not serializer.is_valid():
+                return Response({'status':status.HTTP_400_BAD_REQUEST,'error':serializer.errors})
+            serializer.save()
             return Response({'status':status.HTTP_200_OK,'message':'success'})
         else:
-            return Response({'status':status.HTTP_200_OK,'message':'Hospital is not logged in'})
+            return Response({'status':status.HTTP_400_BAD_REQUEST,'message':'Hospital is not logged in'})
 
 
 class GenerateMeetingLink(APIView):
@@ -529,7 +529,9 @@ class GeneratenewOtpMobile(APIView):
 class Rejectappointment(APIView):
     def post(self,request):
         Appoitment_id=request.data['AppointmentId']
-        obj=Appointment.objects.get(id=Appoitment_id).upadte(status="reject")
+        obj=Appointment.objects.get(id=Appoitment_id)
+        obj.status="Reject"
+        obj.save()
         return Response({'status':status.HTTP_200_OK,'message':'appointment rejected'})  
 
 
@@ -554,7 +556,7 @@ class hospital_login(APIView):
             request.session['username']=username
             request.session['userRole']="Hospital"
             request.session['userId']=user_data.id
-            return Response({'status':status.HTTP_200_OK,'message':'success'})
+            return Response({'status':status.HTTP_200_OK,'message':request.session['username']})
 
 
 
