@@ -173,6 +173,14 @@ class Bookedserializer(serializers.ModelSerializer):
             notes=notes
         )
         obj.save()
+
+        Booked_slot_obj=Booked_slot.objects.create(
+            appointment_id=obj.id,
+            appointment_date=appointment_date,
+            booked_slot=booked_slot,
+            Doctor_id=doctor_id
+        )
+        Booked_slot_obj.save()
         return validated_data
 
 

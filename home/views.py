@@ -532,6 +532,8 @@ class Rejectappointment(APIView):
         obj=Appointment.objects.get(id=Appoitment_id)
         obj.status="Reject"
         obj.save()
+        obj1=Booked_slot.objects.get(appointment_id=Appoitment_id)
+        obj1.delete()
         return Response({'status':status.HTTP_200_OK,'message':'appointment rejected'})  
 
 

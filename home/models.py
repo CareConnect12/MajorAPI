@@ -188,6 +188,7 @@ class Doctor_slot(models.Model):
         return self.slot_type
 
 class Booked_slot(models.Model):
+    appointment_id=models.TextField(default='')
     appointment_date=models.DateField()
     booked_slot=models.TextField()
     Doctor_id=models.TextField()
