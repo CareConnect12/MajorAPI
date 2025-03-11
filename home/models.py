@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+hopitaltype=[
+            ('Government', 'Government'),
+            ('Private', 'Private'),
+            ('Charitable', 'Charitable')
+        ]
+
 gen=(('Male','Male'),
      ('Female','Female'),
      ('Other','Other'))
@@ -41,6 +48,7 @@ sta=(('Andhra Pradesh','Andhra Pradesh'),
     )
 status=(('Married','Married'),
         ('Unmarried','Unmarried'))
+
 class registration(models.Model):
     User=models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     full_name=models.CharField(max_length=200)
@@ -77,9 +85,19 @@ class beds(models.Model):
 
 class hospitalinfo(models.Model):
     hospital_name=models.CharField(max_length=300)
-    hospital_image=models.ImageField(upload_to="hospital_images")
+    hospital_image=models.ImageField(upload_to="hospital_images",default='')
     hospital_address=models.TextField()
     hospital_details=models.TextField()
+    phone_number = models.PositiveBigIntegerField(default=0000000000)  
+    website_url = models.TextField(default="http://example.com")
+    email = models.CharField(max_length=200, unique=True, default="example@example.com")
+    city = models.CharField(max_length=50, blank=True, default="Unknown City")
+    state = models.CharField(max_length=50, choices=sta, default="State1") 
+    zip_code = models.TextField(default="000000")
+    registration_number = models.TextField(default="Not Registered")
+    hospital_type = models.CharField(max_length=50, choices=hopitaltype, default="Private")
+    specialties = models.TextField(default="General")
+    password=models.TextField(default="1234")
     def __str__(self):
         return self.hospital_name
 ge=(('Male','Male'),
@@ -190,6 +208,8 @@ class Appointment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return f"{self.user_name} - {self.doctor_name}"
+    
+    
 
 
     

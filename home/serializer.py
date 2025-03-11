@@ -154,7 +154,7 @@ class Bookedserializer(serializers.ModelSerializer):
         fields="__all__"
     
     def create(self,validated_data):
-        user_name = validated_data['username']
+        user_name = validated_data['user_name']
         user_id = validated_data['userId']
         doctor_id = validated_data['Doctor_id']
         doctor_name = validated_data['doctor_name']
@@ -215,6 +215,45 @@ class DoctorProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=DoctorRegistration
         fields="__all__"
+
+# Serilaizer to insert the hospital
+class HospitalDataserializer(serializers.ModelSerializer):
+    class Meta:
+        model=hospitalinfo
+        fields="__all__"
+    
+    def create(self,validated_data):
+        username=validated_data['email']
+        password=validated_data['password']
+        user_obj=User.objects.filter(username=username)
+        if not user_obj.exists():
+            obj = hospitalinfo.objects.create(
+            hospital_name=validated_data['hospital_name'],
+            # hospital_image=validated_data['hospital_image'],
+            hospital_address=validated_data['hospital_address'],
+            hospital_details=validated_data['hospital_details'],
+            phone_number=validated_data['phone_number'],
+            website_url=validated_data['website_url'],
+            email=validated_data['email'],  
+            city=validated_data['city'],
+            state=validated_data['state'],
+            zip_code=validated_data['zip_code'],
+            registration_number=validated_data['registration_number'],
+            hospital_type=validated_data['hospital_type'],
+            specialties=validated_data['specialties'],
+            password=validated_data['password']
+            )
+            obj.save()
+            user_data=User.objects.create(
+                username=username
+            )
+            user_data.set_password(password)
+            user_data.save()
+            return validated_data
+        else:
+            return ValidationError()
+
+
 
 
 

@@ -14,6 +14,3 @@ admin.site.register(Doctor_slot)
 admin.site.register(Booked_slot)
 admin.site.register(Appointment)
 
-
-
-

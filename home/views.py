@@ -358,16 +358,17 @@ class Available_slot_For_Doctor(APIView):
             booked_slot=Booked_slot.objects.filter(appointment_date=slot_date,Doctor_id=Doctor_id)
             booked_slot_by_date=booked_slot.values_list('booked_slot',flat=True)
             Available_slot=Doctor_slot.objects.exclude(slot_duration__in=booked_slot_by_date)
-            if(Doctor_data.Morning_slot==True):
-                Available_slot=Available_slot.filter(slot_type="Morning")
-            if(Doctor_data.Night_slot==True):
-                Available_slot=Available_slot.filter(slot_type="Night")
-            if(Doctor_data.Afternoon_slot==True):
-                Available_slot=Available_slot.filter(slot_type="Afternoon")
-            if(Doctor_data.Evening_slot==True):
-                Available_slot=Available_slot.filter(slot_type="Evening")
-            serializer=Doctor_slot_serializer(Available_slot,many=True)
-            return Response({'status':status.HTTP_200_OK,'data':serializer.data})
+            final_result={}
+            if Doctor_data.Morning_slot:
+                final_result['Morning'] = Doctor_slot_serializer(Available_slot.filter(slot_type="Morning"), many=True).data
+            if Doctor_data.Night_slot:
+                final_result['Night'] = Doctor_slot_serializer(Available_slot.filter(slot_type="Night"), many=True).data
+            if Doctor_data.Afternoon_slot:
+                final_result['Afternoon'] = Doctor_slot_serializer(Available_slot.filter(slot_type="Afternoon"), many=True).data
+            if Doctor_data.Evening_slot:
+                final_result['Evening'] = Doctor_slot_serializer(Available_slot.filter(slot_type="Evening"), many=True).data
+            # serializer=Doctor_slot_serializer(Available_slot,many=True)
+            return Response({'status':status.HTTP_200_OK,'data':final_result})
         except DoctorRegistration.DoesNotExist:
             return Response({'status':status.HTTP_400_BAD_REQUEST,'message':'Doctor not exist'})
         
@@ -411,6 +412,20 @@ class appointment_status(APIView):
                      return Response({'status':status.HTTP_200_OK,'message':serializer_doctor.data}) 
         else:
             return Response({'status':status.HTTP_400_BAD_REQUEST,'error':'login required'})
+        
+
+class appointment_status_mobile(APIView):
+     def post(self,request): 
+                user_type=request.session['userRole']  
+                user_id=request.session['userId']
+                if user_type=='User':
+                    obj_user=Appointment.objects.filter(user_id=user_id)
+                    serializer_user=Bookedserializer(obj_user,many=True,fields=['user_name','doctor_name','booked_slot','appointment_date','status','payment_status'])
+                    return Response({'status':status.HTTP_200_OK,'message':serializer_user.data})
+                elif user_type=='Doctor':
+                     obj_doctor=Appointment.objects.filter(Doctor_id=user_id)
+                     serializer_doctor=Bookedserializer(obj_doctor,many=True,fields=['user_name','booked_slot','appointment_date','purpose','notes','status','payment_status'])
+                     return Response({'status':status.HTTP_200_OK,'message':serializer_doctor.data}) 
 
 
 class logout_user(APIView):
@@ -509,7 +524,31 @@ class Rejectappointment(APIView):
     def post(self,request):
         Appoitment_id=request.data['AppointmentId']
         obj=Appointment.objects.get(id=Appoitment_id).upadte(status="reject")
-        return Response({'status':status.HTTP_200_OK,'message':'appointment rejected'})       
+        return Response({'status':status.HTTP_200_OK,'message':'appointment rejected'})  
+
+
+class AddHospital(APIView):
+    def post(self,request):
+        serializer=HospitalDataserializer(data=request.data)
+        if not serializer.is_valid():
+            return Response({'status':status.HTTP_400_BAD_REQUEST,'error':serializer.errors})
+        serializer.save()
+        return Response({'status':status.HTTP_200_OK,'message':"success"})     
+    
+# hospital_login
+class hospital_login(APIView):
+    def post(self,request):
+        username=request.data['username']
+        password=request.data['password']
+        user_obj=authenticate(username=username,password=password)
+        if user_obj is None:
+            return Response({'status':status.HTTP_400_BAD_REQUEST,'error':'Invalid username or password'})
+        else:
+            user_data=hospitalinfo.objects.get(email=username)
+            request.session['username']=username
+            request.session['userRole']="Hospital"
+            request.session['userId']=user_data.id
+            return Response({'status':status.HTTP_200_OK,'message':'success'})
 
 
 
