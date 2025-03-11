@@ -420,11 +420,11 @@ class appointment_status_mobile(APIView):
                 user_id=request.data['userId']
                 if user_type=='User':
                     obj_user=Appointment.objects.filter(user_id=user_id)
-                    serializer_user=Bookedserializerget(obj_user,many=True,fields=['user_name','doctor_name','booked_slot','appointment_date','status','payment_status'])
+                    serializer_user=Bookedserializerget(obj_user,many=True,fields=['id','user_name','doctor_name','booked_slot','appointment_date','status','payment_status'])
                     return Response({'status':status.HTTP_200_OK,'message':serializer_user.data})
                 elif user_type=='Doctor':
                      obj_doctor=Appointment.objects.filter(Doctor_id=user_id)
-                     serializer_doctor=Bookedserializerget(obj_doctor,many=True,fields=['user_name','booked_slot','appointment_date','purpose','notes','status','payment_status'])
+                     serializer_doctor=Bookedserializerget(obj_doctor,many=True,fields=['id','user_name','booked_slot','appointment_date','purpose','notes','status','payment_status'])
                      return Response({'status':status.HTTP_200_OK,'message':serializer_doctor.data}) 
 
 
@@ -497,7 +497,7 @@ class GenerateMeetingLink(APIView):
         digest = hmac.new(server_secret.encode(), payload_str.encode(), hashlib.sha256).digest()
         token = base64.b64encode(digest + payload_str.encode()).decode()
         # Generate Meeting Link
-        meeting_link = f"http://127.0.0.1:8000/video_call/?roomID={room_id}"
+        meeting_link = f"https://video-conference-zpob.onrender.com/video_call/?roomID={room_id}"
         AppointmentData=Appointment.objects.get(id=Appitment_id)
         AppointmentData.meeting_link=meeting_link
         AppointmentData.status="Approve"
