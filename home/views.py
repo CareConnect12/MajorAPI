@@ -420,11 +420,11 @@ class appointment_status_mobile(APIView):
                 user_id=request.data['userId']
                 if user_type=='User':
                     obj_user=Appointment.objects.filter(user_id=user_id)
-                    serializer_user=Bookedserializer(obj_user,many=True,fields=['user_name','doctor_name','booked_slot','appointment_date','status','payment_status'])
+                    serializer_user=Bookedserializerget(obj_user,many=True,fields=['user_name','doctor_name','booked_slot','appointment_date','status','payment_status'])
                     return Response({'status':status.HTTP_200_OK,'message':serializer_user.data})
                 elif user_type=='Doctor':
                      obj_doctor=Appointment.objects.filter(Doctor_id=user_id)
-                     serializer_doctor=Bookedserializer(obj_doctor,many=True,fields=['user_name','booked_slot','appointment_date','purpose','notes','status','payment_status'])
+                     serializer_doctor=Bookedserializerget(obj_doctor,many=True,fields=['user_name','booked_slot','appointment_date','purpose','notes','status','payment_status'])
                      return Response({'status':status.HTTP_200_OK,'message':serializer_doctor.data}) 
 
 

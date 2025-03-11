@@ -135,18 +135,18 @@ class Doctor_slot_serializer(serializers.ModelSerializer):
     
 
 # Serializer for booked appointment
-# class Bookedserializer(serializers.ModelSerializer):
-#     class Meta:
-#         model=Appointment
-#         fields="__all__"
-#     def __init__(self, *args, **kwargs):
-#         fields = kwargs.pop('fields', None)
-#         super(Bookedserializer, self).__init__(*args, **kwargs)
-#         if fields is not None:
-#             allowed = set(fields)
-#             existing = set(self.fields.keys())
-#             for field_name in existing - allowed:
-#                 self.fields.pop(field_name)
+class Bookedserializerget(serializers.ModelSerializer):
+    class Meta:
+        model=Appointment
+        fields="__all__"
+    def __init__(self, *args, **kwargs):
+        fields = kwargs.pop('fields', None)
+        super(Bookedserializerget, self).__init__(*args, **kwargs)
+        if fields is not None:
+            allowed = set(fields)
+            existing = set(self.fields.keys())
+            for field_name in existing - allowed:
+                self.fields.pop(field_name)
 
 class Bookedserializer(serializers.ModelSerializer):
     class Meta:
