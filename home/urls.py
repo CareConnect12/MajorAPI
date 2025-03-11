@@ -40,7 +40,7 @@ urlpatterns = [
     path('GeneratenewOtpMobile/',GeneratenewOtpMobile.as_view()),
     path('Rejectappointment/',Rejectappointment.as_view()),
     path('GetDoctor/',GetDoctor),
-    path('requestforappointmentMobile/',requerequestforappointmentMobilestforappointmentMobile.as_view()),
+    path('requestforappointmentMobile/',requestforappointmentMobile.as_view()),
     path('AddHospital/',AddHospital.as_view()),
     path('hospital_login/',hospital_login.as_view()),
     path('appointment_status_mobile/',appointment_status_mobile.as_view())
