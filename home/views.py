@@ -166,15 +166,15 @@ class viewrequest(ListAPIView):
 
 
 # For view get hospital by there id
-@api_view(['get'])
+@api_view(['GET'])
 def get_hospital_by_id(request,id):
-    user=hospitalinfo.objects.filter(id=id,is_verified=True)
+    user=hospitalinfo.objects.filter(id=id)
     serializer=hospitalinfoserializer(user,many=True)
     return Response({'status':200,'message':serializer.data})
 
 
 # for View the beds based on the provided id
-@api_view(['get'])
+@api_view(['GET'])
 def view_beds(request,id):
     try:
         data=beds.objects.get(id=id)
@@ -186,7 +186,7 @@ def view_beds(request,id):
     
 
 # For reject the request the patient request
-@api_view(['get'])
+@api_view(['GET'])
 def rejectrequest(request,id):
         user=patient_info.objects.filter(id=id)
         serializer=patientrequestserializer(user,many=True)
@@ -201,7 +201,7 @@ def rejectrequest(request,id):
 
 
 # For Accept the request of the patient
-@api_view(['get'])
+@api_view(['GET'])
 def selectrequest(request,id):
         user=patient_info.objects.filter(id=id)
         serializer=patientrequestserializer(user,many=True)
@@ -217,7 +217,7 @@ def selectrequest(request,id):
 
 
 # For Dischsrge the patient
-@api_view(['get'])
+@api_view(['GET'])
 def discharge(request,id):
      user=finalinformation.objects.filter(id=id)
      serializer=finalinfoserializer(user,many=True)
@@ -232,7 +232,7 @@ def discharge(request,id):
 
 
 # For Display the accepted patient's 
-@api_view(['get'])
+@api_view(['GET'])
 def finalinfo(request):
      user=finalinformation.objects.all()
      serializer=finalinfoserializer(user,many=True)
