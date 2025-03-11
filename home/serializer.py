@@ -165,7 +165,7 @@ class Bookedserializer(serializers.ModelSerializer):
         obj=Appointment.objects.create(
             user_name=user_name,
             user_id=user_id,
-            doctor_id=doctor_id,
+            Doctor_id=doctor_id,
             doctor_name=doctor_name,
             booked_slot=booked_slot,
             appointment_date=appointment_date,
