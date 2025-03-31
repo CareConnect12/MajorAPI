@@ -143,3 +143,6 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'public/static')
 MEDIA_URL='/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+server_secret = "005d82e1cc382fa4d02da21d2d8d894f"
+app_id = 1825238297

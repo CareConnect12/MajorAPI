@@ -11,6 +11,7 @@ hopitaltype=[
 gen=(('Male','Male'),
      ('Female','Female'),
      ('Other','Other'))
+
 sta=(('Andhra Pradesh','Andhra Pradesh'),
      ('Arunachal Pradesh','Arunachal Pradesh'),
      ('Assam','Assam'),
@@ -49,6 +50,7 @@ sta=(('Andhra Pradesh','Andhra Pradesh'),
 status=(('Married','Married'),
         ('Unmarried','Unmarried'))
 
+# Table for User registraion
 class registration(models.Model):
     User=models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
     full_name=models.CharField(max_length=200)
@@ -67,6 +69,7 @@ class registration(models.Model):
     def __str__(self):
         return self.full_name
 
+# Table for the feedback
 class feed(models.Model):
     name=models.CharField(max_length=100)
     email=models.CharField(max_length=100)
@@ -74,7 +77,7 @@ class feed(models.Model):
     def __str__(self):
         return self.name
 
-
+# Table for the bed's
 class beds(models.Model):
     Hospital_name = models.TextField(default='')
     Hospital_id=models.TextField(default='')
@@ -85,6 +88,7 @@ class beds(models.Model):
     def __str__(self):
         return self.Bed_id
 
+# Table for the hosptial information
 class hospitalinfo(models.Model):
     hospital_name=models.CharField(max_length=300)
     hospital_image=models.ImageField(upload_to="hospital_images",default='')
@@ -102,10 +106,9 @@ class hospitalinfo(models.Model):
     password=models.TextField(default="1234")
     def __str__(self):
         return self.hospital_name
-ge=(('Male','Male'),
-     ('Female','Female'),
-     ('Others','Others'))
 
+
+# Table for the patient information
 class patient_info(models.Model):
     Hospital_name = models.CharField(max_length=300)
     Bed_id=models.CharField(max_length=300,unique=True)
@@ -114,7 +117,7 @@ class patient_info(models.Model):
     Disease=models.TextField()
     Bed_type=models.TextField()
     patient_name=models.CharField(max_length=200)
-    patient_gender=models.CharField(choices=ge,max_length=300)
+    patient_gender=models.CharField(choices=gen,max_length=300)
     patient_age=models.PositiveBigIntegerField()
     address=models.TextField()
     mobile_number=models.PositiveBigIntegerField()
@@ -126,6 +129,7 @@ class patient_info(models.Model):
     special_request=models.TextField()
 
 
+# Table for the booked information
 class finalinformation(models.Model):
     Hospital_name = models.CharField(max_length=300)
     Bed_id=models.CharField(max_length=300,unique=True)
@@ -134,7 +138,7 @@ class finalinformation(models.Model):
     Disease=models.CharField(max_length=200)
     Bed_type=models.CharField(max_length=300)
     patient_name=models.CharField(max_length=200)
-    patient_gender=models.CharField(choices=ge,max_length=300)
+    patient_gender=models.CharField(choices=gen,max_length=300)
     patient_age=models.PositiveBigIntegerField()
     address=models.TextField()
     mobile_number=models.PositiveBigIntegerField()
@@ -187,6 +191,7 @@ class Doctor_slot(models.Model):
     def __str__(self):
         return self.slot_type
 
+# Table for Booked slot
 class Booked_slot(models.Model):
     appointment_id=models.TextField(default='')
     appointment_date=models.DateField()
@@ -194,6 +199,7 @@ class Booked_slot(models.Model):
     Doctor_id=models.TextField()
 
 
+# Table for the appointment
 class Appointment(models.Model):
     user_name = models.CharField(max_length=200)
     user_id=models.PositiveIntegerField()

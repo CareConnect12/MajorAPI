@@ -2,7 +2,7 @@ import random
 from django.core.mail import send_mail
 from django.conf import settings
 
-
+# Function to generate the otp
 def GenerateOtp():
         otp=str(random.randint(0,9))+str(random.randint(0,9))+str(random.randint(0,9))+str(random.randint(0,9))+str(random.randint(0,9))
         return otp
@@ -50,6 +50,7 @@ def MobileMail(user_otp,user):
         recipient_list=[user]
         send_mail(subject,message,from_email,recipient_list)
 
+# Send the meeting link to the email
 def MeetingLinkMail(meeting_link,user):
         subject="Account Verification for CareConnect"
         message = (
@@ -70,6 +71,7 @@ def MeetingLinkMail(meeting_link,user):
         recipient_list=[user]
         send_mail(subject,message,from_email,recipient_list)
 
+# Send the verification token to the Doctor email
 def MailTODoctor(user_token,user):
         subject="Account Verification for CareConnect"
         message = (
