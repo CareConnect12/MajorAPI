@@ -18,6 +18,7 @@ import hmac
 import time
 import base64
 import json
+from django.conf import settings
 from .stripapikey import *
 
 # service for registration for the user
@@ -677,8 +678,8 @@ class BedsService(APIView):
 class GenerateMeetingLink(APIView):
     def post(self, request):
         Appitment_id = request.data["AppointmentId"]
-        app_id = settings.app_id
-        server_secret = settings.server_secret
+        app_id = 1825238297
+        server_secret = "005d82e1cc382fa4d02da21d2d8d894f"
         room_id = str(int(time.time()))
         user_id = str(int(time.time()))
 
@@ -791,7 +792,6 @@ class hospital_login(APIView):
 
 # Service for the stripe payment
 import stripe
-from django.conf import settings
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
