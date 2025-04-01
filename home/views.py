@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 import hashlib
 import hmac
 import time
+from django.core.exceptions import ObjectDoesNotExist
 import base64
 import json
 from django.conf import settings
@@ -97,44 +98,48 @@ class userlogin(APIView):
     def post(self, request):
         username = request.data["username"]
         password = request.data["password"]
-        obj_id = registration.objects.get(email=username)
-        user_role = obj_id.userRole
-        if obj_id:
-            if obj_id.is_verified == True or obj_id.is_verified == 1:
-                user = authenticate(username=username, password=str(password))
-                if user is None:
+        try:
+            obj_id = registration.objects.get(email=username)
+            user_role = obj_id.userRole
+            if obj_id:
+                if obj_id.is_verified == True or obj_id.is_verified == 1:
+                    user = authenticate(username=username, password=str(password))
+                    if user is None:
+                        return Response(
+                            {
+                                "status": status.HTTP_400_BAD_REQUEST,
+                                "message": "invlaid username and password",
+                            }
+                        )
+                    request.session["username"] = request.data["username"]
+                    request.session["user_id"] = obj_id.id
+                    request.session["user_role"] = obj_id.userRole
+                    # request.session.set_expiry(30)
+                    print(request.session["username"])
                     return Response(
                         {
-                            "status": status.HTTP_400_BAD_REQUEST,
-                            "message": "invlaid username and password",
+                            "status": status.HTTP_200_OK,
+                            "message": "success",
+                            "Token": obj_id.token,
+                            "UserRole": obj_id.userRole,
+                            "user_id": obj_id.id,
+                            "username": obj_id.email,
                         }
                     )
-                request.session["username"] = request.data["username"]
-                request.session["user_id"] = obj_id.id
-                request.session["user_role"] = obj_id.userRole
-                # request.session.set_expiry(30)
-                print(request.session["username"])
-                return Response(
-                    {
-                        "status": status.HTTP_200_OK,
-                        "message": "success",
-                        "Token": obj_id.token,
-                        "UserRole": obj_id.userRole,
-                        "user_id": obj_id.id,
-                        "username": obj_id.email,
-                    }
-                )
+                else:
+                    return Response(
+                        {
+                            "status": status.HTTP_401_UNAUTHORIZED,
+                            "message": " user is not verified",
+                        }
+                    )
             else:
                 return Response(
-                    {
-                        "status": status.HTTP_401_UNAUTHORIZED,
-                        "message": " user is not verified",
-                    }
+                   
+                    {"status": status.HTTP_400_BAD_REQUEST, "message": "user not exist"}
                 )
-        else:
-            return Response(
-                {"status": status.HTTP_400_BAD_REQUEST, "message": "user not exist"}
-            )
+        except ObjectDoesNotExist:
+                    return Response({"error": "User does not exist"}, status=404)
 
 
 # Service for profile data (website)
@@ -368,22 +373,25 @@ class Doctor_login(APIView):
                 }
             )
         else:
-            obj = DoctorRegistration.objects.get(email=username)
-            request.session["username"] = username
-            request.session["user_id"] = obj.id
-            request.session["user_type"] = "Doctor"
-            login_update_status = update_login(username, 1)
-            if login_update_status == "successfull":
-                return Response(
-                    {
-                        "status": status.HTTP_200_OK,
-                        "message": "login",
-                        "username": request.session["username"],
-                        "Token": obj.token,
-                        "userRole": obj.userRole,
-                        "user_id": obj.id,
-                    }
-                )
+            try :
+                obj = DoctorRegistration.objects.get(email=username)
+                request.session["username"] = username
+                request.session["user_id"] = obj.id
+                request.session["user_type"] = "Doctor"
+                login_update_status = update_login(username, 1)
+                if login_update_status == "successfull":
+                    return Response(
+                        {
+                            "status": status.HTTP_200_OK,
+                            "message": "login",
+                            "username": request.session["username"],
+                            "Token": obj.token,
+                            "userRole": obj.userRole,
+                            "user_id": obj.id,
+                        }
+                    )
+            except ObjectDoesNotExist:
+                    return Response({"error": "User does not exist"}, status=404)
 
 
 # Service to Display the list of the Doctor's
