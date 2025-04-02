@@ -45,7 +45,7 @@ urlpatterns = [
     path("AddHospital/", AddHospital.as_view()),
     path("hospital_login/", hospital_login.as_view()),
     path("appointment_status_mobile/", appointment_status_mobile.as_view()),
-    path("payment/",process_payment),
+    # path("payment/",process_payment),
     path('UpdateUserProfileData/',UpdateUserProfileData.as_view()),
     path('UpdateDoctorProfileData',UpdateDoctorProfileData.as_view())
 ]

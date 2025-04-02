@@ -16,10 +16,8 @@ from rest_framework.views import APIView
 import hashlib
 import hmac
 import time
-from django.core.exceptions import ObjectDoesNotExist
 import base64
 import json
-from django.conf import settings
 from .stripapikey import *
 
 # service for registration for the user
@@ -93,12 +91,13 @@ def verify_token_Mobile(request):
         )
 
 
+from django.core.exceptions import ObjectDoesNotExist
 # service for login the user
 class userlogin(APIView):
     def post(self, request):
-        username = request.data["username"]
-        password = request.data["password"]
         try:
+            username = request.data["username"]
+            password = request.data["password"]
             obj_id = registration.objects.get(email=username)
             user_role = obj_id.userRole
             if obj_id:
@@ -135,11 +134,10 @@ class userlogin(APIView):
                     )
             else:
                 return Response(
-                   
                     {"status": status.HTTP_400_BAD_REQUEST, "message": "user not exist"}
                 )
         except ObjectDoesNotExist:
-                    return Response({"error": "User does not exist"}, status=404)
+            return Response({'status':status.HTTP_400_BAD_REQUEST,'message':'invalid username'})
 
 
 # Service for profile data (website)
@@ -373,7 +371,7 @@ class Doctor_login(APIView):
                 }
             )
         else:
-            try :
+            try:
                 obj = DoctorRegistration.objects.get(email=username)
                 request.session["username"] = username
                 request.session["user_id"] = obj.id
@@ -391,7 +389,7 @@ class Doctor_login(APIView):
                         }
                     )
             except ObjectDoesNotExist:
-                    return Response({"error": "User does not exist"}, status=404)
+                return Response({'status':status.HTTP_404_NOT_FOUND,'message':'invalid username'})
 
 
 # Service to Display the list of the Doctor's
@@ -797,62 +795,6 @@ class hospital_login(APIView):
                 {"status": status.HTTP_200_OK, "message": request.session["username"]}
             )
 
-
-# Service for the stripe payment
-import stripe
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework import status
-
-stripe.api_key = Secret_key
-
-@api_view(['POST'])
-def process_payment(request):
-    try:
-        # Receive card details from Flutter
-        card_number = request.data.get("card_number")
-        exp_month = request.data.get("exp_month")
-        exp_year = request.data.get("exp_year")
-        cvc = request.data.get("cvc")
-        email = request.data.get("email")
-        amount = int(request.data.get("amount", 0))  # Amount in cents
-
-        if not all([card_number, exp_month, exp_year, cvc, email, amount]):
-            return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Step 1: Create a PaymentMethod in Stripe
-        payment_method = stripe.PaymentMethod.create(
-            type="card",
-            card={
-                "number": card_number,
-                "exp_month": int(exp_month),
-                "exp_year": int(exp_year),
-                "cvc": cvc,
-            },
-            billing_details={"email": email}
-        )
-
-        # Step 2: Create a PaymentIntent with the PaymentMethod
-        intent = stripe.PaymentIntent.create(
-            amount=amount,
-            currency="usd",
-            payment_method=payment_method.id,
-            confirm=True,  # Automatically confirm the payment
-            receipt_email=email,  # Send receipt to the customer
-        )
-
-        return Response(
-            {"status": intent["status"], "clientSecret": intent["client_secret"]},
-            status=status.HTTP_200_OK
-        )
-
-    except stripe.error.CardError as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
 # Service for update the Profile data for user
 class UpdateUserProfileData(APIView):
     def post(self,request):
@@ -872,11 +814,3 @@ class UpdateDoctorProfileData(APIView):
             return Response({'status':status.HTTP_400_BAD_REQUEST,'error':serializer.errors})
         serializer.save()
         return Response({'status':status.HTTP_200_OK,'message':'success'})
-
-            
-
-
-
-
-
-
