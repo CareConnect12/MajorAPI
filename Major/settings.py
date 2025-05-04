@@ -94,7 +94,7 @@ DATABASES = {
 }
 
 
-DATABASES['default']=dj_database_url.parse("postgresql://careconnect_database_hmqw_user:IteMRhsbRjADsrJOP3elcY0KOd4U1i8Y@dpg-cv7gtki3esus739nf2i0-a.oregon-postgres.render.com/careconnect_database_hmqw")
+DATABASES['default']=dj_database_url.parse("postgresql://major_database_zlzu_user:VlezjCFZsjcpk30Tscl2C01VNre16NOo@dpg-d0bpms15pdvs73cuk79g-a.oregon-postgres.render.com/major_database_zlzu")
 
 
 # Password validation
