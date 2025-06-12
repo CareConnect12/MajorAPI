@@ -94,7 +94,7 @@ DATABASES = {
 }
 
 
-DATABASES['default']=dj_database_url.parse("postgresql://major_database_zlzu_user:VlezjCFZsjcpk30Tscl2C01VNre16NOo@dpg-d0bpms15pdvs73cuk79g-a.oregon-postgres.render.com/major_database_zlzu")
+DATABASES['default']=dj_database_url.parse("postgresql://major_database_ffti_user:5e7qzPBSAEW0vBm65q7SquIAyGDBorCT@dpg-d15dbtnfte5s7393akng-a.oregon-postgres.render.com/major_database_ffti")
 
 
 # Password validation
